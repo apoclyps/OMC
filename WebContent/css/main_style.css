@@ -6,7 +6,8 @@
 html, body {
 	margin:0;
 	width:100%;
-	height:auto;
+	height:100%;
+	background-color:#333;
 	font-family: 'Didact Gothic', sans-serif;}
 	
 h1, h2, h3, h4, h5, h6 {
@@ -109,10 +110,8 @@ nav ul li a{
 
 #wrapper {
 	width:100%;
-	background-color:#333;
-	height:auto!important; /*this set the height to auto for those supporting it (not IE)*/
-	height:auto; /*for IE, all others override it by the previous rule*/
-	min-height:100%;}
+	min-height: 100%;
+	background-color:#333;}
 
 #topbar_frame {
 	
@@ -172,21 +171,19 @@ nav ul li a{
 #content {
 	width:100%;
 	top:40px;
-	background-image:url(../img/content_bg.png);
-	background-repeat:no-repeat;
-	background-attachment:fixed;
-	background-size:100% 100%; 
 }
 
 #content_panel {
 	background:#444444;
 	width:70%;
-	height:auto;
+	min-height:100%;
 	margin-left:auto;
 	margin-right:auto;
 	border-left: 1px solid #CCCCCC ;
 	border-right: 1px solid #CCCCCC;
 	z-index:50;
+	padding-top:45px;
+	padding-bottom:45px;
 }
 	
 

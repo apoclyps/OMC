@@ -22,8 +22,6 @@
 </head>
 
 <body>
-	<div id="wrapper">
-
 		<div id="top_bar">
 		
 			<div id="top_bar_title">
@@ -59,44 +57,11 @@
 		
 			<div id="tweet_pane">
 			<!--  tweet HEADER -->
-
-			<div class="tweet_title">
-							<div class="tweet_left">
-								<div class="tweet_title_label"> <span class="blue_font">Tweets</span></div>
-							</div>
-			</div>
-
-					<!--  tweet One -->
-
-							<div class="tweet">
-								<div class="tweet_left">
-									<div class="tweet_avatar">
-										<img src="img/avatar.png" />
-									</div>
-								</div>
-							
-								<div class="tweet_right">
-									<div class="tweet_username">
 										<%
 											Session thisSession = (Session)request.getAttribute("Session");
 																												String username = thisSession.getUsername();
 										%> 	
-									<%=username%> says..
-									</div>
-									
-									<div class="tweet_date">
-										Date
-									</div>
-									
-									<div class="tweet_body">
-										Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-									</div>
-									
-									<div class="tweet_tags">
-										Tags
-									</div>
-								</div>
-							</div>			
+			
 
 					
 					<!--  tweet TWO -->
@@ -104,52 +69,11 @@
 				TweetConnector TC = new TweetConnector();
 			
 				TweetStore TS = new TweetStore();
-				TS = TC.getTweet("2013-02-22 02:02:35.888 a");
-				
-				String content = TS.getContent();
-				String tweet_username = TS.getUser();
-				String date_time = TS.getTimeStampString();
-				String tags = TS.getTags();
-				
+			
 				
 			%>
-						<!--  tweet TWO -->
-							<div class="tweet">
-								<div class="tweet_left">
-									<div class="tweet_avatar">
-										<img src="img/avatar.png" />
-									</div>
-								</div>
+						
 							
-								<div class="tweet_right">
-									<div class="tweet_username">
-									<%=tweet_username%> says..
-									</div>
-									
-									<div class="tweet_date">
-										<%= date_time %>
-									</div>
-									
-									<div class="tweet_body">
-										<%=content %>
-									</div>
-									<br>
-									<div class="tweet_tags">
-										<%=tags%>
-									</div>
-								</div>
-							</div>	
-							
-										
-			<!--  tweet Footer -->
-
-					<div class="tweet_footer">
-						<div class="tweet_left">
-							<div id="tweet_title_label"> </div>
-						</div>
-					</div>
-					
-			
 			<div class="tweet_title">
 							<div class="tweet_left">
 								<div class="tweet_title_label"> <span class="blue_font">Post a Tweet</span></div>
@@ -158,11 +82,14 @@
 							<div class="tweet_post">
 					<div class="big_text">Share with the Campus...</div>
 					<form name="new_post_form" method="POST" action="#">
-						<textarea id="body_text" name="body" rows="5" cols="30"></textarea><br/>
+						
+						<textarea id="body_text" name="body" rows="5" cols="30" placeholder="What's going on around Campus <%=username%>?"></textarea><br/>
+						<!--  <div class="small_text">What's going on around Campus?</div>-->
+						
 						<div class="big_text"># Tag </div>
-
-						<input type="text" id="tags_text" name="tags"><br/>
-						<div class="small_text">May the # be with you!</div>
+						<!-- <div class="small_text">May the # be with you!</div>-->
+						<input type="text" id="tags_text" name="tags" placeholder="May the # be with you!"><br/>
+						
 						<center><input class="blue_button" id="make_new_post" type="submit" value=" Submit Post"></center>
 					</form>
 				
@@ -245,6 +172,5 @@
 			</div>		
 	 
 		 	</div><!--  Content Panel -->
-	</div><!--Wrapper End-->
 </body>
 </html>

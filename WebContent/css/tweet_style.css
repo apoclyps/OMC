@@ -3,7 +3,6 @@
 #tweet_pane {
 
 	position:relative;
-	top:50px;
 	width:550px;
 	margin-left:auto;
 	margin-right:auto;
@@ -133,7 +132,7 @@
 #body_text {
 	width:95%;
 	height:100px;
-	margin-bottom:15px;
+	margin-bottom:5px;
 	margin-left:2%;
 	margin-top:1%;
 	-moz-box-shadow: 0px 0px 8px #000000;

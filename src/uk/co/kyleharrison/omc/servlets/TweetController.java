@@ -17,7 +17,7 @@ import me.prettyprint.hector.api.exceptions.HectorException;
 import uk.co.kyleharrison.omc.connectors.TweetConnector;
 import uk.co.kyleharrison.omc.connectors.UserConnector;
 import uk.co.kyleharrison.omc.model.Session;
-import uk.co.kyleharrison.omc.model.CassandraConnection;;
+import uk.co.kyleharrison.omc.model.CassandraConnection;
 import uk.co.kyleharrison.omc.stores.TweetStore;
 import uk.co.kyleharrison.omc.stores.UserStore;
 
@@ -64,7 +64,7 @@ public class TweetController extends HttpServlet {
 		// Create Tweet
 		try
 		{
-			if (createTweet(full_name,body,tags))
+			/*if (createTweet(full_name,body,tags))
 			{
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_success.jsp");
 				rd.forward(request, response);
@@ -74,6 +74,7 @@ public class TweetController extends HttpServlet {
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_fail.jsp");
 				rd.forward(request, response);
 			}
+			*/
 		}catch(HectorException e)
 		{
 			System.out.println("Exception creating post");
