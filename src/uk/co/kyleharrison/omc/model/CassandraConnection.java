@@ -74,7 +74,7 @@ public class CassandraConnection {
 
 			try
 			{
-				System.out.println("Attempting Login");
+				//System.out.println("Attempting Login");
 				res = LoginTemplate.queryColumns(login_username);
 			}
 			catch (HectorException e)
@@ -84,14 +84,14 @@ public class CassandraConnection {
 			}
 			
 		String value = res.getString("password");
-		System.out.println("value = "+value);
-		System.out.println("login_password = "+login_password);
+	//	System.out.println("value = "+value);
+	//	System.out.println("login_password = "+login_password);
 		
 	    if (value != null)
 	    {
 		    if (value.equals(login_password))
 		    {
-		    	System.out.println("CassCon Login Success");
+		 //   	System.out.println("CassCon Login Success");
 		    	return true;
 		    }
 		    else

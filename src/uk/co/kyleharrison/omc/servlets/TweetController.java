@@ -2,7 +2,9 @@ package uk.co.kyleharrison.omc.servlets;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -20,6 +22,7 @@ import uk.co.kyleharrison.omc.model.Session;
 import uk.co.kyleharrison.omc.model.CassandraConnection;
 import uk.co.kyleharrison.omc.stores.TweetStore;
 import uk.co.kyleharrison.omc.stores.UserStore;
+import uk.co.kyleharrison.omc.utils.StringSplitter;
 
 /**
  * Servlet implementation class NewPostController
@@ -27,13 +30,16 @@ import uk.co.kyleharrison.omc.stores.UserStore;
 @WebServlet("/NewPostController")
 public class TweetController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+	 private HashMap CommandsMap = new HashMap();  
+	
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
     public TweetController() {
         super();
-        // TODO Auto-generated constructor stub
+        CommandsMap.put("#id",1);
+        CommandsMap.put("#name",2);
     }
 
 	/**
@@ -41,10 +47,22 @@ public class TweetController extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		
+		StringSplitter SS = new StringSplitter();
+		String args[]  = SS.SplitRequestPath(request);
+		
+		System.out.println("Args = "+args.length);
+		
+		for(int i=0;i<args.length;i++)
+			System.out.println("Args = "+i + " "+ args[i].toString());
+		
+		// ARG 2 is the MASTER OF THE UNIVERSE
+		
+		
 		HttpSession session = request.getSession();
 		Session currentUserSession = (Session)session.getAttribute("session");
 		request.setAttribute("Session", currentUserSession);
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/newpost.jsp");
+		RequestDispatcher rd = getServletContext().getRequestDispatcher("/tweet.jsp");
 		rd.forward(request, response);
 	}
 
@@ -55,16 +73,25 @@ public class TweetController extends HttpServlet {
 		// TODO Auto-generated method stub
 		HttpSession session = request.getSession();
 		Session currentUserSession = (Session)session.getAttribute("session");
-		String full_name = currentUserSession.getUsername();
+		
+		String username = currentUserSession.getUsername();
 		String body = request.getParameter("body");
 		String tags = request.getParameter("tags");
-		
-		//PostCreator creator = new PostCreator(full_name, body, tags);
-		
+				
 		// Create Tweet
 		try
 		{
-			/*if (createTweet(full_name,body,tags))
+			TweetConnector TC = new TweetConnector();
+			TweetStore TS = new TweetStore();
+			
+			TS.setUser(username);
+			TS.setTweetID(username);
+			TS.setContent(body);
+			TS.setTags(tags);
+			
+			boolean TweetAdded = TC.addTweet(TS);
+			
+			if(TweetAdded)
 			{
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_success.jsp");
 				rd.forward(request, response);
@@ -74,7 +101,6 @@ public class TweetController extends HttpServlet {
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_fail.jsp");
 				rd.forward(request, response);
 			}
-			*/
 		}catch(HectorException e)
 		{
 			System.out.println("Exception creating post");

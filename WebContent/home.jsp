@@ -81,7 +81,7 @@
 			</div>		
 							<div class="tweet_post">
 					<div class="big_text">Share with the Campus...</div>
-					<form name="new_post_form" method="POST" action="#">
+					<form name="post_tweet" method="POST" action="./Message">
 						
 						<textarea id="body_text" name="body" rows="5" cols="30" placeholder="What's going on around Campus <%=username%>?"></textarea><br/>
 						<!--  <div class="small_text">What's going on around Campus?</div>-->
@@ -116,7 +116,7 @@
 			</div>
 	 	<%
 	 				
-					List<TweetStore> posts = TC.getTweets("a");
+					List<TweetStore> posts = TC.getTweets(username);
 					Iterator<TweetStore> iterator;
 					
 					

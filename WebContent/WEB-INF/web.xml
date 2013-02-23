@@ -48,6 +48,17 @@
     <url-pattern>/Register</url-pattern>
   </servlet-mapping>
   
+      <servlet>
+    <servlet-name>TweetController</servlet-name>
+    <servlet-class>uk.co.kyleharrison.omc.servlets.TweetController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TweetController</servlet-name>
+    <url-pattern>/Message</url-pattern>
+    <url-pattern>/Message/*</url-pattern>
+  </servlet-mapping>
+  
+  
   
     	<error-page>
 		<error-code>404</error-code>

@@ -31,36 +31,6 @@ public class TweetConnector {
 	}
 	
 	/*
-	 * Updates a tweet's like count
-	 */
-	public void updateTweet(TweetStore store)
-	{
-		Cluster c; 
-		try{
-			c=CassandraHosts.getCluster();
-		}catch (Exception et){
-			System.out.println("Can't Connect to Cassandra. Check she is OK?");
-			return;
-		}
-		
-		try
-		{
-			ConsistencyLevelPolicy mcl = new MyConsistancyLevel();
-			Keyspace ks = HFactory.createKeyspace("OMC", c);  //V2
-			ks.setConsistencyLevelPolicy(mcl);
-			StringSerializer se = StringSerializer.get();
-			Mutator<String> mutator = HFactory.createMutator(ks,se);
-			Integer likes = store.getLikes(); //Get the new like count
-			mutator.addInsertion(store.getTweetID(), "AllTweets", HFactory.createStringColumn("likes", likes.toString()));
-			mutator.execute();
-		}
-		catch (Exception e)
-		{
-			System.out.println("Adding the tweet totally failed :(" + e);
-		}
-	}
-	
-	/*
 	 * Deletes a tweet and all references to it
 	 */
 	public void deleteTweet(String tweetID)
@@ -83,18 +53,12 @@ public class TweetConnector {
 			TweetStore store = getTweet(tweetID);
 			if (store == null) return; //stop of there it can't get the tweet				
 			String username = store.getUser();
-			String reply = store.getReplyToUser();
 			mutator.delete(username, "UserTweets", tweetID, se);
 			mutator.execute();
 			mutator = HFactory.createMutator(ks,se);
 			mutator.delete(tweetID, "AllTweets", null, se);
 			mutator.execute();
 			mutator = HFactory.createMutator(ks,se);
-			if (reply != null && !reply.equals(""))
-			{
-				mutator.delete(reply, "AtReplies", tweetID, se);
-				mutator.execute();
-			}
 		}
 		catch (Exception e)
 		{
@@ -105,14 +69,14 @@ public class TweetConnector {
 	/*
 	 * Adds a tweet to the alltweets column family, and attributes it to a user.
 	 */
-	public void addTweet(TweetStore store)
+	public boolean addTweet(TweetStore store)
 	{
 		Cluster c; //V2
 		try{
 			c=CassandraHosts.getCluster();
 		}catch (Exception et){
 			System.out.println("Can't Connect to Cassandra. Check she is OK?");
-			return;
+			return false;
 		}
 		try
 		{
@@ -131,10 +95,6 @@ public class TweetConnector {
 			store.setTweetID(new Timestamp(date.getTime()) +" "+ store.getUser()); 
 			String time = now.toString();
 			
-			if (store.getReplyToUser() == null)
-			{
-				store.setReplyToUser("");
-			}
 			mutator.addInsertion(store.getUser(), "UserTweets", HFactory.createStringColumn(store.getTweetID(), time));
 			mutator.execute();
 			mutator = HFactory.createMutator(ks,se);
@@ -147,7 +107,9 @@ public class TweetConnector {
 		catch (Exception e)
 		{
 			System.out.println("Adding the tweet totally failed :(" + e);
+			return false;
 		}
+		return true;
 	}
 	
 	/*

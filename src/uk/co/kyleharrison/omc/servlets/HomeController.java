@@ -47,7 +47,9 @@ public class HomeController extends HttpServlet {
 	{
 		HttpSession session = req.getSession();
 		Session currentUserSession = (Session)session.getAttribute("session");
-			System.out.println("Home controller");
+		
+		System.out.println("Home controller");
+		
 		if(currentUserSession != null)
 		{
 			req.setAttribute("Session", currentUserSession);

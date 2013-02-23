@@ -2,6 +2,9 @@ package uk.co.kyleharrison.omc.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +81,10 @@ public class LoginController extends HttpServlet {
 					session.setAttribute("session", thisSession);
 					
 					session.setAttribute("isActive", true);
+					
+					DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+					Date date = new Date();
+					System.out.println("User Login :"+thisSession.getUsername()+"\t Time : "+dateFormat.format(date));
 					
 					RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
 					rd.forward(req, response);

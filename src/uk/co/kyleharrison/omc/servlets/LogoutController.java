@@ -2,6 +2,9 @@ package uk.co.kyleharrison.omc.servlets;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -10,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import uk.co.kyleharrison.omc.model.Session;
 
 /**
  * Servlet implementation class Logout
@@ -33,6 +38,9 @@ public class LogoutController extends HttpServlet {
 		// TODO Auto-generated method stub
     	
 		logOut(request, response);
+		//RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+		//rd.forward(request, response);
+		
 	}
 
 	/**
@@ -45,17 +53,36 @@ public class LogoutController extends HttpServlet {
 	
 	public void logOut(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException
 	{
-		java.util.Date date= new java.util.Date();
-		System.out.println("Log Out Controller : " + new Timestamp(date.getTime()));
-		HttpSession session = req.getSession();
-				
-		if (req.getParameter("logout") != null)
+		Date date = new Date();
+		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+		
+		try
 		{
-			session.removeAttribute("session");
-			req.getSession().invalidate();
-			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
-			rd.forward(req, response);			
-		}	
+			if (req.getMethod().equals("POST"))
+			{
+				HttpSession session = req.getSession();
+				
+				if (req.getParameter("logout") != null)
+				{
+					//Session thisSession = (Session)req.getSession();
+					session.removeAttribute("session");
+					req.getSession().invalidate();
+					System.out.println("User Log out :\t Time : "+dateFormat.format(date));
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
+					rd.forward(req, response);			
+				}
+			}
+			else
+			{
+				System.out.println("User Log out :\t Time : "+dateFormat.format(date));
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
+				rd.forward(req, response);
+			}
+		}catch(Exception e)
+		{
+			System.out.println("Exception E in Log out");
+		}
+
 	}
 
 }

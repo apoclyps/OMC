@@ -1,5 +1,8 @@
 package uk.co.kyleharrison.omc.utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -82,8 +85,12 @@ public final class CassandraHosts {
 	}
 	
 	public static Cluster getCluster(){
+			//DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+			//Date date = new Date();
+			
 			c = HFactory.getOrCreateCluster(CassandraStore.instance().getClusterName(), CassandraStore.instance().getHost() + ":" + CassandraStore.instance().getPort());
-			System.out.println("Connecting on : "+CassandraStore.instance().getClusterName().toString()+" : "+  CassandraStore.instance().getHost().toString() + ":" + CassandraStore.instance().getPort().toString());
+			//System.out.println("Connecting on : "+CassandraStore.instance().getClusterName().toString()+" : "+  CassandraStore.instance().getHost().toString() + ":" + CassandraStore.instance().getPort().toString() + " @ "+dateFormat.format(date));
+			
 			getHosts();	
 			Keyspaces.SetUpKeySpaces(c);
 			return c;

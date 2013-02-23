@@ -26,6 +26,18 @@ nav{
    	float:left;
 }
 
+a {
+	font-family:'BebasNeueRegular';
+	color: #1c94fb;
+	font-size:20px;
+}
+
+a:hover {
+	font-family:'BebasNeueRegular';
+	color: #1c94fb;
+	font-size:22px;
+}
+
 nav ul li a:hover{
 	color:#1e90ff;
 	font-size:26px;
@@ -74,7 +86,7 @@ nav ul li a{
   	font-size:28px;
   	float:left;
 	margin-top:-1.5px;
-  	font-family:'BebasNeueRegular'
+  	font-family:'BebasNeueRegular';
 }
 
 .button_astext:hover {
@@ -84,7 +96,7 @@ nav ul li a{
     padding:0;
     color: #1c94fb;
   	font-size:26px;
-  	font-family:'BebasNeueRegular'
+  	font-family:'BebasNeueRegular';
 }
 
 .blue_button:hover { 
