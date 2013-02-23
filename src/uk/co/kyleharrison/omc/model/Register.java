@@ -1,5 +1,6 @@
 package uk.co.kyleharrison.omc.model;
 
+import uk.co.kyleharrison.omc.connectors.CassandraConnector;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 
 public class Register {
@@ -27,17 +28,17 @@ public class Register {
 	
 	public boolean execute()
 	{
-		CassandraConnection cassandraConnection = new CassandraConnection();
+		CassandraConnector cassandraConnector = new CassandraConnector();
 
 		System.out.println(first_name + surname + username + password + email + avatar);
-		if (cassandraConnection.connect())
+		if (cassandraConnector.connect())
 		{
-			if (cassandraConnection.createAccount(first_name, surname, username, password, email, avatar))
+			if (cassandraConnector.createAccount(first_name, surname, username, password, email, avatar))
 				return true;
 		}
 		else
 		{
-			System.out.println("cassandraConnection.execute() failed.");
+			System.out.println("cassandraConnector.execute() failed.");
 			return false;
 		}
 		return false;

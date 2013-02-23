@@ -1,13 +1,9 @@
 package uk.co.kyleharrison.omc.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uk.co.kyleharrison.omc.model.Session;
 import uk.co.kyleharrison.omc.model.Session;
 import uk.co.kyleharrison.omc.model.Login;
 
@@ -60,44 +55,52 @@ public class LoginController extends HttpServlet {
 		
 			String username = req.getParameter("username");
 			String password = req.getParameter("password");
+			String isActive = req.getParameter("isActive");
 			
-			//System.out.println("User :\t"+username + " Attempting Login \n With Password :\t " + password);
-			
-			if(username !="" && password != "")
+			if(isActive==null)
 			{
-				Login login = new Login(username, password);
+				System.out.println("User :\t"+username + " Attempting Login \n With Password :\t " + password);
 				
-				boolean success = false;
-				
-				if (login.setup())
+				if(username !=null && password != null )
 				{
-					success = login.execute();
+					Login login = new Login(username, password);
+					
+					boolean success = false;
+					
+					if (login.setup())
+					{
+						success = login.execute();
+					}
+					
+					//System.out.println("Login Controller -"+ success);
+					if (success)
+					{
+						Session thisSession = login.createSession();
+						session.setAttribute("session", thisSession);
+						
+						session.setAttribute("isActive", true);
+						
+						DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+						Date date = new Date();
+						System.out.println("User Login :"+thisSession.getUsername()+"\t Time : "+dateFormat.format(date));
+						
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
+						rd.forward(req, response);
+					}
+					else
+					{					
+						req.setAttribute("invalid_login", true);
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
+						rd.forward(req, response);
+					}
 				}
-				
-				//System.out.println("Login Controller -"+ success);
-				if (success)
-				{
-					Session thisSession = login.createSession();
-					session.setAttribute("session", thisSession);
-					
-					session.setAttribute("isActive", true);
-					
-					DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-					Date date = new Date();
-					System.out.println("User Login :"+thisSession.getUsername()+"\t Time : "+dateFormat.format(date));
-					
+				else{
 					RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
 					rd.forward(req, response);
 				}
-				else
-				{					
-					req.setAttribute("invalid_login", true);
-					RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
-					rd.forward(req, response);
-				}
-			}
-			else{
-				RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
+			}else
+			{
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
 				rd.forward(req, response);
 			}
 	}

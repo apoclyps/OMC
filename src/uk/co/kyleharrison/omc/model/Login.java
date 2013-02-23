@@ -1,5 +1,6 @@
 package uk.co.kyleharrison.omc.model;
 
+import uk.co.kyleharrison.omc.connectors.CassandraConnector;
 import uk.co.kyleharrison.omc.model.Session;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -7,7 +8,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 public class Login {
 	
 	ColumnFamilyTemplate<String, String> template;
-	CassandraConnection cassandraConnection = new CassandraConnection();
+	CassandraConnector cassandraConnector = new CassandraConnector();
 	String login_username = null;
 	String login_password = null;
 	
@@ -19,12 +20,12 @@ public class Login {
 	
 	public boolean setup()
 	{
-		return cassandraConnection.connect();
+		return cassandraConnector.connect();
 	}
 	
 	public boolean execute()
 	{
-		if (cassandraConnection.attemptLogin(login_username, login_password))
+		if (cassandraConnector.attemptLogin(login_username, login_password))
 			return true;
 		else
 			return false;		

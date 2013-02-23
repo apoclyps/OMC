@@ -34,9 +34,9 @@
 						<div class="LogOut">
 							<nav>
 								<ul>
-									<li><a href="home.jsp">Profile</a></li>
-									<li><a href="friends.jsp">Friends</a></li>
-									<li><a href="timeline.jsp">Timeline</a></li>
+									<li><a href="/OMC/Profile">Profile</a></li>
+									<li><a href="/OMC/Message">Tweet</a></li>
+									<li><a href="/OMC/">Timeline</a></li>
 									<li>
 										<form name="logout_form" method="post" action="./Logout">
 											<input type="hidden" id="logout" name="logout">
@@ -59,7 +59,7 @@
 			<!--  tweet HEADER -->
 										<%
 											Session thisSession = (Session)request.getAttribute("Session");
-																												String username = thisSession.getUsername();
+											String username = thisSession.getUsername();
 										%> 	
 			
 

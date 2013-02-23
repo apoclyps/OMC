@@ -1,8 +1,12 @@
-package uk.co.kyleharrison.omc.model;
+package uk.co.kyleharrison.omc.connectors;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.UUID;
+
+import uk.co.kyleharrison.omc.stores.ProfileStore;
+import uk.co.kyleharrison.omc.stores.UserStore;
 
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -10,7 +14,6 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.OrderedRows;
@@ -20,7 +23,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
-public class CassandraConnection {
+public class CassandraConnector {
 	
 	ColumnFamilyTemplate<String, String> UsersTemplate;
 	ColumnFamilyTemplate<String, String> LoginTemplate;
@@ -38,7 +41,7 @@ public class CassandraConnection {
 	String ClusterName = "Test Cluster";
 	String KeyspaceName = "OMC";
 	
-	public CassandraConnection()
+	public CassandraConnector()
 	{
 		
 	}
@@ -96,11 +99,11 @@ public class CassandraConnection {
 		    }
 		    else
 		    	return false;
-	    }
-	    else
-	    	return false;
+	    }else{
+	    	return false;}
 	}
 	
+	/*
 	public boolean getPost(String login_username)
 	{
 		ColumnFamilyResult<String, String> res = null;
@@ -125,7 +128,7 @@ public class CassandraConnection {
 	    }
 	    else
 	    	return false;
-	}
+	}*/
 	
 	public boolean createAccount(String _first_name, String _surname, String _username, String _password, String _email, String _avatar)
 	{
@@ -219,14 +222,6 @@ public class CassandraConnection {
 	    return llist;
 	}
 	
-	private UUID generateTimeUUID()
-	{
-		UUID timeUUID = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-		
-		return timeUUID;
-	}
-		
-	
 	public boolean createPost(String _full_name, String _body, String _tags)
 	{
 		Long timestamp = System.currentTimeMillis();
@@ -259,5 +254,63 @@ public class CassandraConnection {
 		
 		return true;
 	}
+	
+		public ProfileStore fetchProfile(String username)
+		{
+		String first_name;
+		String surname;
+		Date dob;
+		String email;
+		String city;
+		String country;
+		String avatar;
+		
+		ProfileStore user_profile = new ProfileStore();
+		
+		ColumnFamilyResult<String, String> res = null;
+		boolean connected = false;
+		boolean err_found = false;
+		
+		while (!connected)
+		{
+		err_found = false;
+		
+		try
+		{
+		//res = UserTemplate.queryColumns(username);
+			UserStore US = new UserStore();
+			US.getUserName();
+		}
+		catch (HectorException e)
+		{
+		err_found = true;	
+		}
+		
+		if (!err_found)
+		{
+		connected = true;
+		}
+		}
+		
+		first_name = res.getString("first_name");
+		surname = res.getString("surname");
+		dob = res.getDate("dob");
+		email = res.getString("email");
+		city = res.getString("city");
+		country = res.getString("country");
+		avatar = res.getString("avatar");
+		
+		
+		user_profile.setUsername(username);
+		user_profile.setFirstName(first_name);
+		user_profile.setSurname(surname);
+		user_profile.setDOB(dob);
+		user_profile.setEmail(email);
+		user_profile.setCity(city);
+		user_profile.setCountry(country);
+		user_profile.setAvatar(avatar);
+		
+		return user_profile;
+		}
 
 }

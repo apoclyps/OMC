@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.StringTokenizer;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,7 +17,6 @@ import me.prettyprint.hector.api.exceptions.HectorException;
 import uk.co.kyleharrison.omc.connectors.TweetConnector;
 import uk.co.kyleharrison.omc.connectors.UserConnector;
 import uk.co.kyleharrison.omc.model.Session;
-import uk.co.kyleharrison.omc.model.CassandraConnection;
 import uk.co.kyleharrison.omc.stores.TweetStore;
 import uk.co.kyleharrison.omc.stores.UserStore;
 import uk.co.kyleharrison.omc.utils.StringSplitter;
@@ -108,11 +105,12 @@ public class TweetController extends HttpServlet {
 		
 	}
 	
-	public void GetTweets(HttpServletRequest request, HttpServletResponse response,int Format, String username) throws ServletException, IOException{
+	public void GetTweets(HttpServletRequest request, HttpServletResponse response, String username) throws ServletException, IOException{
 
 		TweetConnector connect = new TweetConnector();
 		List<TweetStore> tweets = connect.getTweets(username);
 		UserConnector connector = new UserConnector();
+		
 		if (tweets == null || tweets.size() < 1) return;
 		
 		UserStore store = connector.getUserByUsername(tweets.get(0).getUser());

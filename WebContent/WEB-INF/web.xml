@@ -58,7 +58,15 @@
     <url-pattern>/Message/*</url-pattern>
   </servlet-mapping>
   
-  
+<servlet>
+    <servlet-name>ProfileController</servlet-name>
+    <servlet-class>uk.co.kyleharrison.omc.servlets.ProfileController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ProfileController</servlet-name>
+    <url-pattern>/Profile</url-pattern>
+    <url-pattern>/Profile/*</url-pattern>
+  </servlet-mapping> 
   
     	<error-page>
 		<error-code>404</error-code>
