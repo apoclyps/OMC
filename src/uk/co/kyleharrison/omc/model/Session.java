@@ -2,9 +2,11 @@ package uk.co.kyleharrison.omc.model;
 
 public class Session {
 
+	private String userID;
 	private String username;
 	private String full_name;
 	private String avatar;
+	private boolean isActive;
 	
 	public void setUsername(String _username)
 	{
@@ -34,5 +36,21 @@ public class Session {
 	public String getAvatar()
 	{
 		return avatar;
+	}
+
+	public String getUserID() {
+		return userID;
+	}
+
+	public void setUserID(String userID) {
+		this.userID = userID;
+	}
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
 	}
 }

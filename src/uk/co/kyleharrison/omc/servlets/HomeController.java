@@ -46,20 +46,26 @@ public class HomeController extends HttpServlet {
 	private void directToHome(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
 		HttpSession session = req.getSession();
-		Session currentUserSession = (Session)session.getAttribute("session");
+		Session currentUserSession = (Session)session.getAttribute("Session");
 		
 		System.out.println("Home controller");
-		
+		try
+		{
+			//System.out.println("currentSession = "+currentUserSession.toString());
 		if(currentUserSession != null)
 		{
-			req.setAttribute("Session", currentUserSession);
+			System.out.println("currentSession = "+currentUserSession.getUsername());
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/home.jsp");
 			rd.forward(req, res);
-		}
+		}			
 		else
 		{
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
 			rd.forward(req, res);
+		}
+		}catch (Exception e)
+		{
+			System.out.print(e.getMessage()+"Home Controller");
 		}
 	}
 

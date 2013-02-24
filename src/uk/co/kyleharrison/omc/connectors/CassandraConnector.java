@@ -1,10 +1,12 @@
 package uk.co.kyleharrison.omc.connectors;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.UUID;
 
+import uk.co.kyleharrison.omc.stores.CassandraStore;
 import uk.co.kyleharrison.omc.stores.ProfileStore;
 import uk.co.kyleharrison.omc.stores.UserStore;
 
@@ -29,20 +31,26 @@ public class CassandraConnector {
 	ColumnFamilyTemplate<String, String> LoginTemplate;
 	ColumnFamilyTemplate<UUID, String> UUIDTemplate;
 	ColumnFamilyTemplate<String, String> PostsTemplate;
+	ColumnFamilyTemplate<String, String> SubscribedToByTemplate;
+	ColumnFamilyTemplate<String, String> SubscribesToTemplate;
+	ColumnFamilyTemplate<String, Long> UserPostTemplate;
 
 	Cluster cassandraCluster;
 	Keyspace cassandraKeyspace;
 	String _CF;
 	
-	//String Host = "192.168.2.2"; // Cassandra Server I.P.
-	String Host = "31.220.241.162"; // Cassandra Server I.P.
-	String Port = "9160";
-	String IP = Host+":"+Port;
-	String ClusterName = "Test Cluster";
-	String KeyspaceName = "OMC";
+	String Host; 
+	String Port;
+	String ClusterName;
+	String KeyspaceName;
+	String IP;
 	
 	public CassandraConnector()
 	{
+		CassandraStore CS = CassandraStore.instance();
+		ClusterName = CS.getClusterName();
+		IP = CS.getHost() +":"+ CS.getPort();
+		KeyspaceName = CS.getKeyspaceName();
 		
 	}
 	
@@ -61,6 +69,25 @@ public class CassandraConnector {
 			LoginTemplate =  new ThriftColumnFamilyTemplate<String, String>(cassandraKeyspace,"Username",StringSerializer.get(),StringSerializer.get());	
 				
 			PostsTemplate =  new ThriftColumnFamilyTemplate<String, String>(cassandraKeyspace,"Posts",StringSerializer.get(),StringSerializer.get());	
+			
+			//DEFINE TEMPLATE FOR COLUMNFAMILY
+			SubscribedToByTemplate = new ThriftColumnFamilyTemplate<String, String>(cassandraKeyspace,
+			"SUBSCRIBED_TO_BY",
+			StringSerializer.get(),
+			StringSerializer.get());	
+
+			//DEFINE TEMPLATE FOR COLUMNFAMILY
+			SubscribesToTemplate = new ThriftColumnFamilyTemplate<String, String>(cassandraKeyspace,
+			"SUBSCRIBES_TO",
+			StringSerializer.get(),
+			StringSerializer.get());	
+			
+			//DEFINE TEMPLATE FOR COLUMNFAMILY
+			UserPostTemplate = new ThriftColumnFamilyTemplate<String, Long>(cassandraKeyspace,
+			"REVERSE_TEST",
+			StringSerializer.get(),
+			LongSerializer.get());	
+
 			
 			return true;
 		}
@@ -312,5 +339,171 @@ public class CassandraConnector {
 		
 		return user_profile;
 		}
+		
+		
+		
+		/*
+		public LinkedList<ColumnFamilyResult<Long, String>> querySubscriptionPosts(String _username) //LinkedList<Row<Long, String, String>>
+		{	
+		LinkedList<ColumnFamilyResult<Long, String>> all_sub_posts = new LinkedList<ColumnFamilyResult<Long, String>>();
+
+		//Find user's subscriptions
+		ColumnFamilyResult<String, String> res = null;
+		boolean connected = false;
+		boolean err_found = false;
+
+
+		while (!connected)
+		{
+		err_found = false;
+
+		try
+		{
+		res = SubscribesToTemplate.queryColumns(_username);
+		}
+		catch (HectorException e)
+		{
+		System.out.println(e.getMessage());
+		err_found = true;	
+		}
+
+		if (!err_found)
+		{
+		connected = true;
+		}
+		}
+
+		Collection<String> subscriptions = res.getColumnNames();
+		for (Iterator<String> iterator = subscriptions.iterator(); iterator.hasNext();)
+		{
+		String sub_username = (String)iterator.next();
+
+		ColumnFamilyResult<String, Long> sub_post_list = null;
+
+		boolean conn = false;
+		boolean err = false;
+
+		while (!conn)
+		{
+		err = false;
+
+		try
+		{
+		sub_post_list = UserPostTemplate.queryColumns(sub_username);
+		}
+		catch (HectorException e)
+		{
+		System.out.println(e.getMessage());
+		err = true;	
+		}
+
+		if (!err)
+		{
+		conn = true;
+		}
+		}
+
+		Collection<Long> sub_post_ids = sub_post_list.getColumnNames();
+
+		for (Iterator<Long> post_iterator = sub_post_ids.iterator(); post_iterator.hasNext();)
+		{
+
+		String post_id = post_iterator.next();
+		ColumnFamilyResult<String, String> sub_post = null;
+		sub_post = PostsTemplate.queryColumns(post_id);
+
+
+		System.out.println(sub_post.toString());
+		all_sub_posts.add(sub_post);
+		}
+		}
+		return all_sub_posts;
+		}
+
+
+		public LinkedList<ProfileStore> getSubscriptions(String _username)
+		{
+		LinkedList<ProfileStore> subscription_profiles = new LinkedList<ProfileStore>();
+		ColumnFamilyResult<String, String> res = null;
+		boolean connected = false;
+		boolean err_found = false;
+
+		while (!connected)
+		{
+		err_found = false;
+
+		try
+		{
+		res = SubscribesToTemplate.queryColumns(_username);
+		}
+		catch (HectorException e)
+		{
+		System.out.println(e.getMessage());
+		err_found = true;	
+		}
+
+		if (!err_found)
+		{
+		connected = true;
+		}
+		}
+
+		Collection<String> subscriptions = res.getColumnNames();
+		for (Iterator<String> iterator = subscriptions.iterator(); iterator.hasNext();)
+		{
+		String subscription_username = iterator.next();
+		System.out.println(subscription_username);
+		ProfileStore profile = fetchProfile(subscription_username);
+		subscription_profiles.add(profile);
+		System.out.println(profile.getFirstName());
+		}
+
+		return subscription_profiles;
+		}
+		
+		*/
+
+
+		public LinkedList<ProfileStore> getSubscribers(String _username)
+		{
+		LinkedList<ProfileStore> subscriber_profiles = new LinkedList<ProfileStore>();
+		ColumnFamilyResult<String, String> res = null;
+		boolean connected = false;
+		boolean err_found = false;
+
+		while (!connected)
+		{
+		err_found = false;
+
+		try
+		{
+		res = SubscribedToByTemplate.queryColumns(_username);
+		}
+		catch (HectorException e)
+		{
+		System.out.println(e.getMessage());
+		err_found = true;	
+		}
+
+		if (!err_found)
+		{
+		connected = true;
+		}
+		}
+
+		Collection<String> subscribers = res.getColumnNames();
+		for (Iterator<String> iterator = subscribers.iterator(); iterator.hasNext();)
+		{
+		String subscriber_username = iterator.next();
+		System.out.println(subscriber_username);
+		ProfileStore profile = fetchProfile(subscriber_username);
+		subscriber_profiles.add(profile);
+		System.out.println(profile.getFirstName());
+		}
+
+		return subscriber_profiles;
+		}
+
+
 
 }

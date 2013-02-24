@@ -77,13 +77,20 @@ public class LoginController extends HttpServlet {
 					{
 						Session thisSession = login.createSession();
 						session.setAttribute("session", thisSession);
-						
+						System.out.println("isActive login"+session.getAttribute("isActive"));
 						session.setAttribute("isActive", true);
+						System.out.println("isActive login"+session.getAttribute("isActive"));
 						
 						DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 						Date date = new Date();
 						System.out.println("User Login :"+thisSession.getUsername()+"\t Time : "+dateFormat.format(date));
 						
+						
+						Session currentUserSession = (Session)session.getAttribute("session");
+						currentUserSession.setUsername(req.getParameter("username"));
+						System.out.println("Username set on login : "+req.getParameter("username"));
+						session.setAttribute("Session", currentUserSession);
+
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
 						rd.forward(req, response);
 					}

@@ -37,6 +37,7 @@
   <servlet-mapping>
     <servlet-name>HomeController</servlet-name>
     <url-pattern>/Home</url-pattern>
+    <url-pattern>/Home/*</url-pattern>
   </servlet-mapping>
   
     <servlet>

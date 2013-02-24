@@ -36,7 +36,7 @@
 								<ul>
 									<li><a href="/OMC/Profile">Profile</a></li>
 									<li><a href="/OMC/Message">Tweet</a></li>
-									<li><a href="/OMC/">Timeline</a></li>
+									<li><a href="/OMC/Home">Timeline</a></li>
 									<li>
 										<form name="logout_form" method="post" action="./Logout">
 											<input type="hidden" id="logout" name="logout">
@@ -58,8 +58,17 @@
 			<div id="tweet_pane">
 			<!--  tweet HEADER -->
 										<%
-											Session thisSession = (Session)request.getAttribute("Session");
-											String username = thisSession.getUsername();
+											Session thisSession = (Session)session.getAttribute("Session");
+											String username;
+											if(thisSession!=null)
+											{
+												username = thisSession.getUsername();
+											}
+											else
+											{	
+												System.out.println("Session null"+thisSession);
+												username = "error";
+											}
 										%> 	
 			
 

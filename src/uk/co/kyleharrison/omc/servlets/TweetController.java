@@ -45,6 +45,13 @@ public class TweetController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
+		HttpSession session = request.getSession();
+		Object isActive = session.getAttribute("isActive");
+		//System.out.println("isActive Tweet "+isActive);
+		
+		if(isActive!= null)
+		{
+		
 		StringSplitter SS = new StringSplitter();
 		String args[]  = SS.SplitRequestPath(request);
 		
@@ -55,54 +62,63 @@ public class TweetController extends HttpServlet {
 		
 		// ARG 2 is the MASTER OF THE UNIVERSE
 		
-		
-		HttpSession session = request.getSession();
-		Session currentUserSession = (Session)session.getAttribute("session");
-		request.setAttribute("Session", currentUserSession);
 		RequestDispatcher rd = getServletContext().getRequestDispatcher("/tweet.jsp");
 		rd.forward(request, response);
+		}
+		else
+		{
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
+			rd.forward(request, response);
+		
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		HttpSession session = request.getSession();
-		Session currentUserSession = (Session)session.getAttribute("session");
 		
-		String username = currentUserSession.getUsername();
-		String body = request.getParameter("body");
-		String tags = request.getParameter("tags");
+		if(request.getParameter("isActive")!= null)
+		{
+			HttpSession session = request.getSession();
+			Session currentUserSession = (Session)session.getAttribute("session");
+			
+			String username = currentUserSession.getUsername();
+			String body = request.getParameter("body");
+			String tags = request.getParameter("tags");
+					
+			// Create Tweet
+			try
+			{
+				TweetConnector TC = new TweetConnector();
+				TweetStore TS = new TweetStore();
 				
-		// Create Tweet
-		try
-		{
-			TweetConnector TC = new TweetConnector();
-			TweetStore TS = new TweetStore();
-			
-			TS.setUser(username);
-			TS.setTweetID(username);
-			TS.setContent(body);
-			TS.setTags(tags);
-			
-			boolean TweetAdded = TC.addTweet(TS);
-			
-			if(TweetAdded)
+				TS.setUser(username);
+				TS.setTweetID(username);
+				TS.setContent(body);
+				TS.setTags(tags);
+				
+				boolean TweetAdded = TC.addTweet(TS);
+				
+				if(TweetAdded)
+				{
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_success.jsp");
+					rd.forward(request, response);
+				}
+				else
+				{
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_fail.jsp");
+					rd.forward(request, response);
+				}
+			}catch(HectorException e)
 			{
-				RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_success.jsp");
-				rd.forward(request, response);
+				System.out.println("Exception creating post");
 			}
-			else
-			{
-				RequestDispatcher rd = getServletContext().getRequestDispatcher("/post_fail.jsp");
-				rd.forward(request, response);
-			}
-		}catch(HectorException e)
+		}else
 		{
-			System.out.println("Exception creating post");
+			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
+			rd.forward(request, response);
 		}
-		
 	}
 	
 	public void GetTweets(HttpServletRequest request, HttpServletResponse response, String username) throws ServletException, IOException{
