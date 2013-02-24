@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uk.co.kyleharrison.omc.connectors.CassandraConnector;
 import uk.co.kyleharrison.omc.model.Session;
-import uk.co.kyleharrison.omc.model.Login;
 
 /**
  * Servlet implementation class LoginController
@@ -28,7 +28,6 @@ public class LoginController extends HttpServlet {
     public LoginController() {
         super();
         // TODO Auto-generated constructor stub
-        System.out.println("Login Controller");
     }
 
 	/**
@@ -55,48 +54,40 @@ public class LoginController extends HttpServlet {
 		
 			String username = req.getParameter("username");
 			String password = req.getParameter("password");
-			String isActive = req.getParameter("isActive");
 			
-			if(isActive==null)
+			if(session.getAttribute("isActive")== null)
 			{
-				System.out.println("User :\t"+username + " Attempting Login \n With Password :\t " + password);
+				//System.out.println("User :\t"+username + " Attempting Login \n With Password :\t " + password);
 				
-				if(username !=null && password != null )
+				if(username !=null && password != null)
 				{
-					Login login = new Login(username, password);
+					CassandraConnector CC = new CassandraConnector();
 					
-					boolean success = false;
-					
-					if (login.setup())
+					if (CC.connect())
 					{
-						success = login.execute();
-					}
-					
-					//System.out.println("Login Controller -"+ success);
-					if (success)
-					{
-						Session thisSession = login.createSession();
-						session.setAttribute("session", thisSession);
-						System.out.println("isActive login"+session.getAttribute("isActive"));
-						session.setAttribute("isActive", true);
-						System.out.println("isActive login"+session.getAttribute("isActive"));
-						
-						DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-						Date date = new Date();
-						System.out.println("User Login :"+thisSession.getUsername()+"\t Time : "+dateFormat.format(date));
-						
-						
-						Session currentUserSession = (Session)session.getAttribute("session");
-						currentUserSession.setUsername(req.getParameter("username"));
-						System.out.println("Username set on login : "+req.getParameter("username"));
-						session.setAttribute("Session", currentUserSession);
+						if(CC.attemptLogin(username, password))
+						{
+							Session thisSession = new Session();
+							thisSession.setUsername(username);
+	
+							session.setAttribute("session", thisSession);
+							session.setAttribute("isActive", true);
+	
+							DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+							Date date = new Date();
+							System.out.println("User Login :"+thisSession.getUsername()+"\t Time : "+dateFormat.format(date));
+							
+							Session currentUserSession = (Session)session.getAttribute("session");
+							currentUserSession.setUsername(req.getParameter("username"));
+							session.setAttribute("Session", currentUserSession);
 
+						}				
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
 						rd.forward(req, response);
 					}
 					else
 					{					
-						req.setAttribute("invalid_login", true);
+						session.setAttribute("invalid_login", true);
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
 						rd.forward(req, response);
 					}

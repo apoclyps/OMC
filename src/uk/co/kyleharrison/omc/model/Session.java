@@ -7,6 +7,7 @@ public class Session {
 	private String full_name;
 	private String avatar;
 	private boolean isActive;
+	private String email;
 	
 	public void setUsername(String _username)
 	{
@@ -52,5 +53,13 @@ public class Session {
 
 	public void setActive(boolean isActive) {
 		this.isActive = isActive;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

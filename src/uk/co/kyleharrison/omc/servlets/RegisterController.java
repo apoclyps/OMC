@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import uk.co.kyleharrison.omc.model.Register;
+import uk.co.kyleharrison.omc.connectors.UserConnector;
+import uk.co.kyleharrison.omc.stores.UserStore;
 
 /**
  * Servlet implementation class SignupController
@@ -22,43 +23,54 @@ public class RegisterController extends HttpServlet {
      */
     public RegisterController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		String reg_first_name = request.getParameter("reg_first_name");
 		String reg_surname = request.getParameter("reg_surname");
 		String reg_username = request.getParameter("reg_username");
 		String reg_password = request.getParameter("reg_password");
 		String reg_password_confirm = request.getParameter("reg_password_confirm");
 		String reg_email = request.getParameter("reg_email");
-		
-		String default_avatar = "/OMC/img/avatar.png";
-		
-		Register newAccount = new Register(reg_first_name, reg_surname, reg_username, reg_password, reg_email, default_avatar);
-		
-		if (newAccount.execute())
-		{
-			System.out.println("newAccount.execute() succeeded - new account created.");
-			request.setAttribute("account_created", true);
+				
+			try
+			{
+			UserStore Author = new UserStore();
+			
+			Author.setName(reg_first_name);
+			Author.setUserName(reg_username);
+			Author.setSurname(reg_surname);
+			Author.setEmail(reg_email);
+			Author.setBio("Enter Description");
+			Author.setAvatar("img/avatar.png");
+			Author.setPassword(reg_password);
+			Author.setAge("Enter Age");
+			Author.setJoined();
+			Author.setLocation("Enter Location");
+			Author.setPosts("0");
+			Author.setFollowees("0");
+			Author.setFollowers("0");	
+			
+			UserConnector UC = new UserConnector();
+			UC.addUser(Author);
+			
+			}
+			catch(Exception e)
+			{
+				System.out.println("Error creating account "+e.getMessage());
+			}
+			
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/Home");
 			rd.forward(request, response);
-		}
-		else
-		{
-			System.out.println("newAccount.execute() failed.");
-		}
 		
 	}
 

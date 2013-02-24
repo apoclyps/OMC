@@ -56,7 +56,7 @@
 					<!--  POST ENDS HERE -->
 		
 			<div id="tweet_pane">
-			<!--  tweet HEADER -->
+	
 										<%
 											Session thisSession = (Session)session.getAttribute("Session");
 											String username;
@@ -66,56 +66,10 @@
 											}
 											else
 											{	
-												System.out.println("Session null"+thisSession);
 												username = "error";
 											}
 										%> 	
-			
-
-					
-					<!--  tweet TWO -->
-			<%
-				TweetConnector TC = new TweetConnector();
-			
-				TweetStore TS = new TweetStore();
-			
-				
-			%>
-						
-							
-			<div class="tweet_title">
-							<div class="tweet_left">
-								<div class="tweet_title_label"> <span class="blue_font">Post a Tweet</span></div>
-			</div>
-			</div>		
-							<div class="tweet_post">
-					<div class="big_text">Share with the Campus...</div>
-					<form name="post_tweet" method="POST" action="./Message">
-						
-						<textarea id="body_text" name="body" rows="5" cols="30" placeholder="What's going on around Campus <%=username%>?"></textarea><br/>
-						<!--  <div class="small_text">What's going on around Campus?</div>-->
-						
-						<div class="big_text"># Tag </div>
-						<!-- <div class="small_text">May the # be with you!</div>-->
-						<input type="text" id="tags_text" name="tags" placeholder="May the # be with you!"><br/>
-						
-						<center><input class="blue_button" id="make_new_post" type="submit" value=" Submit Post"></center>
-					</form>
-				
-				</div>
-					
-					<!--  tweet Footer -->
-
-					<div class="tweet_footer">
-						<div class="tweet_left">
-							<div id="tweet_title_label"> </div>
-						</div>
-					</div>
-					
-					
-			
-			
-	 
+			 
 	 <!--  tweet HEADER -->
 
 			<div class="tweet_title">
@@ -124,11 +78,12 @@
 							</div>
 			</div>
 	 	<%
-	 				
+	 			try
+	 			{
+					TweetConnector TC = new TweetConnector();
+					TweetStore TS = new TweetStore();
 					List<TweetStore> posts = TC.getTweets(username);
 					Iterator<TweetStore> iterator;
-					
-					
 					
 					iterator = posts.iterator();
 					while (iterator.hasNext())
@@ -167,7 +122,10 @@
 							</div>	
 						<%
 					}
-					
+	 			}catch(Exception e)
+	 			{
+	 				System.out.println("Exception in home.jsp - Tweet "+e.getMessage());
+	 			}
 					%>
 					
 										<!--  tweet Footer -->

@@ -1,7 +1,6 @@
 package uk.co.kyleharrison.omc.servlets;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import uk.co.kyleharrison.omc.model.Session;
 
 /**
  * Servlet implementation class Logout
@@ -28,26 +25,19 @@ public class LogoutController extends HttpServlet {
      */
     public LogoutController() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-    	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {    	
 		logOut(request, response);
-		//RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.jsp");
-		//rd.forward(request, response);
-		
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		logOut(request, response);
 	}
 	
@@ -64,7 +54,6 @@ public class LogoutController extends HttpServlet {
 				
 				if (req.getParameter("logout") != null)
 				{
-					//Session thisSession = (Session)req.getSession();
 					session.removeAttribute("session");
 					req.getSession().invalidate();
 					System.out.println("User Log out :\t Time : "+dateFormat.format(date));

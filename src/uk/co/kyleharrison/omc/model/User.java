@@ -1,8 +1,10 @@
 package uk.co.kyleharrison.omc.model;
 
+// Validation of Register - Not Implemented 
 public class User {
 	private boolean loggedIn;
 	private String username;
+	private String surname;
 	private String password;
 	private boolean passwordConfirmation;
 	
@@ -10,6 +12,7 @@ public class User {
 	{
 		loggedIn=false;
 		username = null;
+		setSurname(null);
 		password = null;
 		passwordConfirmation = false;
 	}
@@ -54,6 +57,14 @@ public class User {
 	public boolean isloggedIn(){
 		System.out.println("Logged "+loggedIn + ":"+this.username);
 		return loggedIn;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
 	}
 	
 	

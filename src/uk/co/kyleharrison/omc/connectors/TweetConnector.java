@@ -1,7 +1,6 @@
 package uk.co.kyleharrison.omc.connectors;
 
 import java.sql.Timestamp;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,9 +14,7 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.SliceQuery;
-import uk.co.kyleharrison.omc.stores.FollowereeStore;
 import uk.co.kyleharrison.omc.stores.TweetStore;
-import uk.co.kyleharrison.omc.stores.UserStore;
 import uk.co.kyleharrison.omc.utils.CassandraHosts;
 import uk.co.kyleharrison.omc.utils.MyConsistancyLevel;
 
@@ -109,80 +106,7 @@ public class TweetConnector {
 		}
 		return true;
 	}
-	
-	/*
-	 * Gets a users feed, meaning all their friends recent tweets
-	 * and their @replies
-	 */
-	public List<TweetStore> getFeed(String username)
-	{
-		List<String> tweetIDs = new LinkedList<String>();
-		UserConnector userConnector = new UserConnector();
-		
-		//Get those who the user follows, so that they can be loaded into the users feed.
-		List<FollowereeStore> followees= userConnector.getFollowees(username);
-		
-		List<TweetStore> tweets = new LinkedList<TweetStore>();
-		List<TweetStore> tweets2 = new LinkedList<TweetStore>();
-		if (followees == null || followees.size() == 0)
-		{
-			
-		}
-		else
-		{
-			for (FollowereeStore store: followees)
-			{
-				try
-				{
-					//Get the tweets of all those who they follow
-					tweets.addAll(getTweets(store.getUsername()));
-				}
-				catch (Exception e)
-				{
-					System.out.println("oops" + e);
-				}
-			}
-		}
-		
-		try
-		{
-			//Get all at replies and tweets of the current user
-			tweets.addAll(getTweets(username));
-		}
-		catch (Exception e)
-		{
-			System.out.println("oops" + e);
-		}
-		for (TweetStore tweet: tweets)
-		{
-			if (!tweetIDs.contains(tweet.getTweetID()))
-			{
-				tweetIDs.add(tweet.getTweetID());
-				tweets2.add(tweet);
-			}
-		}
-		if (tweets2 != null && tweets2.size() > 0) Collections.sort(tweets2); //ensure they are in time order
-		for (TweetStore tweet: tweets2)
-		{
-			try
-			{
-				/*
-				 * Get the avatars
-				 */
-				UserConnector connect = new UserConnector();
-				UserStore store = connect.getUserByUsername(tweet.getUser());
-				store = connect.getUserByEmail(store.getEmail());
-				tweet.setAvatarUrl(store.getAvatarUrl());
 
-			}
-			catch (Exception e)
-			{
-				//
-			}
-		}
-		return tweets2;
-	}
-	
 	/*
 	 * Gets a single tweet based on ID.
 	 */

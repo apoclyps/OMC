@@ -5,7 +5,6 @@ public class CassandraStore {
 	private String Host = "31.220.241.162"; // Cassandra Server I.P.
 	//private String Host = "127.0.0.1"; // Cassandra Server I.P.
 	private String Port = "9160";
-	//private String ClusterName = "CassabdraStarbase";
 	private String ClusterName = "Test Cluster";
 	private String Admin = "kyle";
 	private String KeyspaceName = "OMC";

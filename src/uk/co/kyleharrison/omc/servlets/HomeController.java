@@ -48,13 +48,13 @@ public class HomeController extends HttpServlet {
 		HttpSession session = req.getSession();
 		Session currentUserSession = (Session)session.getAttribute("Session");
 		
-		System.out.println("Home controller");
+	//System.out.println("Home controller");
 		try
 		{
 			//System.out.println("currentSession = "+currentUserSession.toString());
 		if(currentUserSession != null)
 		{
-			System.out.println("currentSession = "+currentUserSession.getUsername());
+			//System.out.println("currentSession = "+currentUserSession.getUsername());
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/home.jsp");
 			rd.forward(req, res);
 		}			

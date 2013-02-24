@@ -1,5 +1,6 @@
 package uk.co.kyleharrison.omc.testing;
 
+// Unimplemented - Used for Validation during login.
 import me.prettyprint.cassandra.serializers.*;
 import me.prettyprint.cassandra.service.*;
 

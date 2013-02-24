@@ -5,61 +5,25 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import uk.co.kyleharrison.omc.stores.CassandraStore;
-
+import me.prettyprint.cassandra.service.CassandraHost;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.cassandra.service.*;
+import uk.co.kyleharrison.omc.stores.CassandraStore;
 
 public final class CassandraHosts {
 	static Cluster c=null;
 	
-	public CassandraHosts() {
+	public static Cluster getCluster()
+	{
+			c = HFactory.getOrCreateCluster(CassandraStore.instance().getClusterName(), CassandraStore.instance().getHost() + ":" + CassandraStore.instance().getPort());
+			getHosts();	
+			Keyspaces.SetUpKeySpaces(c);
+			return c;
 	}
 	
 	public static String getHost() {
 		return CassandraStore.instance().getHost();
 	}
-	
-	public List<CassandraHost> getPoolHosts()
-	{
-		if (c==null){
-			 System.out.println("Creating cluster connection");
-			c = HFactory.getOrCreateCluster(CassandraStore.instance().getClusterName(), CassandraStore.instance().getHost() + ":" + CassandraStore.instance().getPort());
-		}
-		Set <CassandraHost>hosts= c.getKnownPoolHosts(false);
-
-		Iterator<CassandraHost> it =hosts.iterator();
-		int i=0;
-		List<CassandraHost> returnHosts = new LinkedList<CassandraHost>();
-		while (it.hasNext()) {
-			
-			CassandraHost ch=it.next();
-			returnHosts.add(ch);
-			i++;
-		}
-		return returnHosts;
-	}
-	
-	public List<CassandraHost> getDownedPoolHosts()
-	{
-		if (c==null){
-			 System.out.println("Creating cluster connection");
-			c = HFactory.getOrCreateCluster(CassandraStore.instance().getClusterName(), CassandraStore.instance().getHost() + ":" + CassandraStore.instance().getPort());
-		}
-		Set <CassandraHost>hosts= c.getConnectionManager().getDownedHosts();
-		Iterator<CassandraHost> it =hosts.iterator();
-		int i=0;
-		List<CassandraHost> returnHosts = new LinkedList<CassandraHost>();
-		while (it.hasNext()) {
-			CassandraHost ch=it.next();
-			returnHosts.add(ch);
-			i++;
-		}
-		return returnHosts;
-	}
-	
-	
 	
 	public static String[] getHosts() {
 		if (c==null){
@@ -81,15 +45,40 @@ public final class CassandraHosts {
 		return sHosts;
 	}
 	
-	public static Cluster getCluster(){
-			//DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-			//Date date = new Date();
-			
+	public CassandraHosts() {
+	}
+	
+	public List<CassandraHost> getDownedPoolHosts()
+	{
+		if (c==null){
+			 System.out.println("Creating cluster connection");
 			c = HFactory.getOrCreateCluster(CassandraStore.instance().getClusterName(), CassandraStore.instance().getHost() + ":" + CassandraStore.instance().getPort());
-			//System.out.println("Connecting on : "+CassandraStore.instance().getClusterName().toString()+" : "+  CassandraStore.instance().getHost().toString() + ":" + CassandraStore.instance().getPort().toString() + " @ "+dateFormat.format(date));
+		}
+		Set <CassandraHost>hosts= c.getConnectionManager().getDownedHosts();
+		Iterator<CassandraHost> it =hosts.iterator();
+		List<CassandraHost> returnHosts = new LinkedList<CassandraHost>();
+		while (it.hasNext()) {
+			CassandraHost ch=it.next();
+			returnHosts.add(ch);
+		}
+		return returnHosts;
+	}
+	
+	public List<CassandraHost> getPoolHosts()
+	{
+		if (c==null){
+			 System.out.println("Creating cluster connection");
+			c = HFactory.getOrCreateCluster(CassandraStore.instance().getClusterName(), CassandraStore.instance().getHost() + ":" + CassandraStore.instance().getPort());
+		}
+		Set <CassandraHost>hosts= c.getKnownPoolHosts(false);
+
+		Iterator<CassandraHost> it =hosts.iterator();
+		List<CassandraHost> returnHosts = new LinkedList<CassandraHost>();
+		while (it.hasNext()) {
 			
-			getHosts();	
-			Keyspaces.SetUpKeySpaces(c);
-			return c;
+			CassandraHost ch=it.next();
+			returnHosts.add(ch);
+		}
+		return returnHosts;
 	}	
 }
